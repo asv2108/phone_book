@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Contact;
+use app\models\PhoneNumber;
 
 /**
  * ContactSearch represents the model behind the search form of `app\models\Contact`.
@@ -42,12 +43,11 @@ class ContactSearch extends Contact
     public function search($params)
     {
         $query = Contact::find();
-
-        // add conditions that should always apply here
-
+        
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+
 
         $this->load($params);
 

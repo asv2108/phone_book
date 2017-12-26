@@ -13,7 +13,7 @@ use Yii;
  * @property string $last_name
  * @property int $active
  *
- * @property PhoneNumber $phoneNumber
+ * @property PhoneNumber $id0
  */
 class Contact extends \yii\db\ActiveRecord
 {
@@ -34,6 +34,7 @@ class Contact extends \yii\db\ActiveRecord
             [['first_name'], 'required'],
             [['active'], 'integer'],
             [['first_name', 'second_name', 'last_name'], 'string', 'max' => 50],
+            [['id'], 'exist', 'skipOnError' => true, 'targetClass' => PhoneNumber::className(), 'targetAttribute' => ['id' => 'contact_id']],
         ];
     }
 
@@ -54,9 +55,9 @@ class Contact extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPhoneNumber()
+    public function getNumbers()
     {
-        return $this->hasOne(PhoneNumber::className(), ['id' => 'id']);
+        return $this->hasMany(PhoneNumber::className(), ['contact_id' => 'id']);
     }
 
     /**

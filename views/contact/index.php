@@ -25,12 +25,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
             'first_name',
             'second_name',
             'last_name',
-            'active',
+            [
+                'attribute'=>'number',
+                'value' => function ($data) {
+                    $db_numbers = $data->numbers;
+                    $numbers = ' ';
+                    foreach ($db_numbers as $db_number) {
+                        $numbers .= $db_number['number'] . ' ';
+                    }
+                    return $numbers;
+                },
+            ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

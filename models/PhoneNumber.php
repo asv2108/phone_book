@@ -8,10 +8,11 @@ use Yii;
  * This is the model class for table "phone_number".
  *
  * @property int $id
+ * @property int $contact_id
  * @property int $number
  * @property int $active
  *
- * @property Contact $id0
+ * @property Contact $contact
  */
 class PhoneNumber extends \yii\db\ActiveRecord
 {
@@ -29,10 +30,9 @@ class PhoneNumber extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['number'], 'required'],
-            [['number', 'active'], 'integer'],
+            [['contact_id', 'number'], 'required'],
+            [['contact_id', 'number', 'active'], 'integer'],
             [['number'], 'unique'],
-            [['id'], 'exist', 'skipOnError' => true, 'targetClass' => Contact::className(), 'targetAttribute' => ['id' => 'id']],
         ];
     }
 
@@ -43,6 +43,7 @@ class PhoneNumber extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
+            'contact_id' => Yii::t('app', 'Contact ID'),
             'number' => Yii::t('app', 'Number'),
             'active' => Yii::t('app', 'Active'),
         ];
@@ -51,9 +52,9 @@ class PhoneNumber extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getId0()
+    public function getContact()
     {
-        return $this->hasOne(Contact::className(), ['id' => 'id']);
+        return $this->hasOne(Contact::className(), ['id' => 'contact_id']);
     }
 
     /**

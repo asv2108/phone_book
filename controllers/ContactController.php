@@ -5,9 +5,11 @@ namespace app\controllers;
 use Yii;
 use app\models\Contact;
 use app\models\ContactSearch;
+use app\models\PhoneNumber;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\data\ActiveDataProvider;
 
 /**
  * ContactController implements the CRUD actions for Contact model.
@@ -87,11 +89,19 @@ class ContactController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
+
+        $dataProvider = new ActiveDataProvider([
+            'query' =>PhoneNumber::find()->where(['contact_id'=>$id]),
+        ]);
+        $dataProvider->pagination = false;
+        $dataProvider->totalCount = false;
+        
 
         return $this->render('update', [
             'model' => $model,
+            'dataProvider'=>$dataProvider
         ]);
     }
 
