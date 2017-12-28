@@ -3,18 +3,16 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Contact;
-use app\models\ContactSearch;
 use app\models\PhoneNumber;
+use app\models\PhoneNumberSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\data\ActiveDataProvider;
 
 /**
- * ContactController implements the CRUD actions for Contact model.
+ * PhoneNumberController implements the CRUD actions for PhoneNumber model.
  */
-class ContactController extends Controller
+class PhoneNumberController extends Controller
 {
     /**
      * @inheritdoc
@@ -32,12 +30,12 @@ class ContactController extends Controller
     }
 
     /**
-     * Lists all Contact models.
+     * Lists all PhoneNumber models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new ContactSearch();
+        $searchModel = new PhoneNumberSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -47,7 +45,7 @@ class ContactController extends Controller
     }
 
     /**
-     * Displays a single Contact model.
+     * Displays a single PhoneNumber model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -60,13 +58,13 @@ class ContactController extends Controller
     }
 
     /**
-     * Creates a new Contact model.
+     * Creates a new PhoneNumber model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Contact();
+        $model = new PhoneNumber();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -78,7 +76,7 @@ class ContactController extends Controller
     }
 
     /**
-     * Updates an existing Contact model.
+     * Updates an existing PhoneNumber model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -89,22 +87,16 @@ class ContactController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+            return $this->redirect(['view', 'id' => $model->id]);
         }
-
-        $dataProvider = new ActiveDataProvider([
-            'query' =>PhoneNumber::find()->where(['contact_id'=>$id]),
-        ]);
-        
 
         return $this->render('update', [
             'model' => $model,
-            'dataProvider'=>$dataProvider
         ]);
     }
 
     /**
-     * Deletes an existing Contact model.
+     * Deletes an existing PhoneNumber model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -118,15 +110,15 @@ class ContactController extends Controller
     }
 
     /**
-     * Finds the Contact model based on its primary key value.
+     * Finds the PhoneNumber model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Contact the loaded model
+     * @return PhoneNumber the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Contact::findOne($id)) !== null) {
+        if (($model = PhoneNumber::findOne($id)) !== null) {
             return $model;
         }
 

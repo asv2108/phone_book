@@ -30,6 +30,8 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
     </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
+        'summary' => false,
+        'caption' => 'Список номеров контакта:',
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             'number',
