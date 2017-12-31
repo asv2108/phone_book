@@ -43,20 +43,7 @@ class PhoneNumberController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
-
-    /**
-     * Displays a single PhoneNumber model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
+    
     /**
      * Creates a new PhoneNumber model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -65,29 +52,50 @@ class PhoneNumberController extends Controller
     public function actionCreate()
     {
         $model = new PhoneNumber();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $contact_id = Yii::$app->request->post('PhoneNumber')['contact_id'];
+            if($model->validate()){
+                $model->contact_id = $contact_id;
+                if($model->save()){
+                    return 'success create';
+                }else{
+                    return 'error save';
+                }
+            }else{
+                $errors = $model->errors;
+                $message = '';
+                foreach($errors as $k=>$v)
+                {
+                    // TODO может быть $v[1], .....
+                    $message .= $v[0];
+                    $message .= '//';
+                }
+                return $message;
+            }
         }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
     }
-
+    
     /**
      * Updates an existing PhoneNumber model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
+     * @param integer $contact_id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id,$contact_id)
     {
         $model = $this->findModel($id);
+        if ($model->load(Yii::$app->request->post())) {
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            if($model->save()){
+                return $this->redirect(['contact/update','id'=>$contact_id]);
+            }else{
+                return $this->render('update', [
+                    'model' => $model,
+                    'error' => $model->errors
+                ]);
+            }
         }
 
         return $this->render('update', [
@@ -99,14 +107,15 @@ class PhoneNumberController extends Controller
      * Deletes an existing PhoneNumber model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
+     * @param integer $contact_id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionDelete($id,$contact_id)
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['contact/update','id' =>$contact_id,]);
     }
 
     /**

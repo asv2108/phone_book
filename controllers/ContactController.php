@@ -47,19 +47,6 @@ class ContactController extends Controller
     }
 
     /**
-     * Displays a single Contact model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new Contact model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
@@ -68,10 +55,16 @@ class ContactController extends Controller
     {
         $model = new Contact();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            if($model->save()){
+                return $this->redirect(['index']);
+            }else{
+                return $this->render('create', [
+                    'model' => $model,
+                    'errors' => $model->errors
+                ]);
+            }
         }
-
         return $this->render('create', [
             'model' => $model,
         ]);
@@ -87,24 +80,25 @@ class ContactController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
+        $phone_model = new PhoneNumber;
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         }
 
+        $query = $phone_model->find()->where(['contact_id'=>$id]);
         $dataProvider = new ActiveDataProvider([
-            'query' =>PhoneNumber::find()->where(['contact_id'=>$id]),
+            'query' =>$query,
         ]);
-        
-
         return $this->render('update', [
             'model' => $model,
+            'phone_model' =>$phone_model,
+            'count' => $query->count(),
             'dataProvider'=>$dataProvider
         ]);
     }
 
     /**
-     * Deletes an existing Contact model.
+     * Deletes an existing Contact model and linked phone numbers
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -112,6 +106,8 @@ class ContactController extends Controller
      */
     public function actionDelete($id)
     {
+        //TODO without delete an item better set active/inactive
+        PhoneNumber::deleteAll(['contact_id' => $id]);
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);

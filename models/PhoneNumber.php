@@ -30,10 +30,19 @@ class PhoneNumber extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['contact_id', 'number'], 'required'],
-            [['contact_id', 'number', 'active'], 'integer'],
-            [['number'], 'unique'],
+            //TODO create my own validator for length
+            ['number', 'integer'],
+            ['number', 'unique'],
+            ['number', 'validateNumber','skipOnEmpty'=> false],
+
         ];
+    }
+
+    public function validateNumber(){
+        if(strlen($this->number)<7 || strlen($this->number)>15){
+            $errorMsg= 'wrong number format';
+            $this->addError('number',$errorMsg);
+        }
     }
 
     /**
@@ -42,10 +51,10 @@ class PhoneNumber extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'contact_id' => Yii::t('app', 'Contact ID'),
+            //'id' => Yii::t('app', 'ID'),
+            //'contact_id' => Yii::t('app', 'For the current contact'),
             'number' => Yii::t('app', 'Number'),
-            'active' => Yii::t('app', 'Active'),
+            //'active' => Yii::t('app', 'Active'),
         ];
     }
 
@@ -65,4 +74,5 @@ class PhoneNumber extends \yii\db\ActiveRecord
     {
         return new PhoneNumberQuery(get_called_class());
     }
+
 }

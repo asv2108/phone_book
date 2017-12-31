@@ -49,7 +49,7 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-
+                'contact/phone-number/create'=>'/phone-number/create'
             ],
         ],
 
