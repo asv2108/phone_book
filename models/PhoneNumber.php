@@ -38,6 +38,10 @@ class PhoneNumber extends \yii\db\ActiveRecord
         ];
     }
 
+
+    /**
+     * check phone number format
+     */
     public function validateNumber(){
         if(strlen($this->number)<7 || strlen($this->number)>15){
             $errorMsg= 'wrong number format';
