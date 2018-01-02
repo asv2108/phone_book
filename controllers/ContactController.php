@@ -54,17 +54,39 @@ class ContactController extends Controller
     public function actionCreate()
     {
         $model = new Contact();
-
-        if ($model->load(Yii::$app->request->post())) {
-            if($model->save()){
-                return $this->redirect(['index']);
+        $request = Yii::$app->request;
+        if($request->isPost)
+        {
+            $post=$request->post('Contact');
+            $contact = Contact::find()
+                ->where(['first_name'=>$post['first_name']])
+                ->andWhere(['second_name'=>$post['second_name']])
+                ->andWhere(['last_name'=>$post['last_name']])
+                ->one();
+            if($contact){
+                if($contact->active == 0){
+                    $contact->active = 1;
+                    $contact->update();
+                    return $this->redirect(['index']);
+                }else{
+                    return $this->render('create', [
+                        'model' => $contact,
+                        'errors' => 'Not unique!'
+                    ]);
+                }
             }else{
-                return $this->render('create', [
-                    'model' => $model,
-                    'errors' => $model->errors
-                ]);
+                $model->load(Yii::$app->request->post());
+                if($model->save()){
+                    return $this->redirect(['index']);
+                }else{
+                    return $this->render('create', [
+                        'model' => $model,
+                        'errors' => $model->errors
+                    ]);
+                }
             }
         }
+
         return $this->render('create', [
             'model' => $model,
         ]);
@@ -81,8 +103,16 @@ class ContactController extends Controller
     {
         $model = $this->findModel($id);
         $phone_model = new PhoneNumber;
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+        if ($model->load(Yii::$app->request->post())) {
+            if($model->validate()){
+                $model->save();
+                return $this->redirect(['index']);
+            }else{
+                echo "<pre>";
+                var_dump($model->errors);
+                echo "</pre>";
+                exit;
+            }
         }
 
         $query = $phone_model->find()->where(['contact_id'=>$id]);
@@ -106,11 +136,17 @@ class ContactController extends Controller
      */
     public function actionDelete($id)
     {
-        //TODO without delete an item better set active/inactive
-        PhoneNumber::deleteAll(['contact_id' => $id]);
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+        $model = $this->findModel($id);
+        $model->active = 0;
+        if($model->update()!=='false'){
+            PhoneNumber::deleteAll(['contact_id' => $id]);
+            return $this->redirect(['index']);
+        }else{
+            echo "<pre>";
+            var_dump('Error set the contact to inactive');
+            echo "</pre>";
+            exit;
+        }
     }
 
     /**

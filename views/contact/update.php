@@ -14,6 +14,15 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 $this->registerJsFile('@web/js/add-number.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $contact_id = $model->id;
 ?>
+<?php
+    if(isset($errors) && !empty($errors)):
+?>
+<div class="error-message col-md-12">
+    <h3 class="text-danger"><?= $errors?></h3>
+</div>
+<?php
+endif;
+?>
 <div class="contact-update col-md-6">
     <div class="contact-form">
         <?php $form = ActiveForm::begin(); ?>

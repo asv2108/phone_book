@@ -32,9 +32,9 @@ class Contact extends \yii\db\ActiveRecord
     {
         return [
             [['first_name'], 'required'],
-            [['active'], 'integer'],
+            //[['active'], 'integer'],
             [['first_name', 'second_name', 'last_name'], 'string', 'max' => 50],
-            [['id'], 'exist', 'skipOnError' => true, 'targetClass' => PhoneNumber::className(), 'targetAttribute' => ['id' => 'contact_id']],
+            //[['id'], 'exist', 'skipOnError' => false, 'targetClass' => PhoneNumber::className(), 'targetAttribute' => ['id' => 'contact_id']],
         ];
     }
 

@@ -60,7 +60,8 @@ class ContactSearch extends Contact
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'active' => $this->active,
+            //'active' => $this->active,
+            'active' => 1,
         ]);
 
         $query->andFilterWhere(['like', 'first_name', $this->first_name])

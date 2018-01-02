@@ -30,24 +30,13 @@ class PhoneNumber extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            //TODO create my own validator for length
-            ['number', 'integer'],
-            ['number', 'unique'],
-            ['number', 'validateNumber','skipOnEmpty'=> false],
-
+            ['number', 'string', 'min'=>7, 'max'=>20],
+            ['number', 'match', 'pattern' => '/^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){7,14}(\s*)?$/'],
+            ['number', 'unique']
         ];
     }
 
 
-    /**
-     * check phone number format
-     */
-    public function validateNumber(){
-        if(strlen($this->number)<7 || strlen($this->number)>15){
-            $errorMsg= 'wrong number format';
-            $this->addError('number',$errorMsg);
-        }
-    }
 
     /**
      * @inheritdoc
