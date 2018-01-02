@@ -30,6 +30,7 @@ class PhoneNumber extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['number'],'filter','filter'=>'trim'],
             ['number', 'string', 'min'=>7, 'max'=>20],
             ['number', 'match', 'pattern' => '/^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){7,14}(\s*)?$/'],
             ['number', 'unique']

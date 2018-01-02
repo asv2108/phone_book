@@ -54,6 +54,10 @@ class ContactController extends Controller
     public function actionCreate()
     {
         $model = new Contact();
+        $data = [];
+        $data['model']=$model;
+        //$data['errors']=false;
+        $data['success']=false;
         $request = Yii::$app->request;
         if($request->isPost)
         {
@@ -67,29 +71,24 @@ class ContactController extends Controller
                 if($contact->active == 0){
                     $contact->active = 1;
                     $contact->update();
+                    Yii::$app->session->setFlash('success', 'Success, recover from inactive.');
                     return $this->redirect(['index']);
                 }else{
-                    return $this->render('create', [
-                        'model' => $contact,
-                        'errors' => 'Not unique!'
-                    ]);
+                    Yii::$app->session->setFlash('error','Such contact already exist');
+                    $data['model']=$contact;
                 }
             }else{
                 $model->load(Yii::$app->request->post());
                 if($model->save()){
+                    Yii::$app->session->setFlash('success', 'Success create the contact');
                     return $this->redirect(['index']);
                 }else{
-                    return $this->render('create', [
-                        'model' => $model,
-                        'errors' => $model->errors
-                    ]);
+                    Yii::$app->session->setFlash('error',$model->errors );
                 }
             }
         }
 
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        return $this->render('create',$data);
     }
 
     /**
@@ -103,28 +102,42 @@ class ContactController extends Controller
     {
         $model = $this->findModel($id);
         $phone_model = new PhoneNumber;
-        if ($model->load(Yii::$app->request->post())) {
-            if($model->validate()){
-                $model->save();
-                return $this->redirect(['index']);
-            }else{
-                echo "<pre>";
-                var_dump($model->errors);
-                echo "</pre>";
-                exit;
-            }
-        }
-
         $query = $phone_model->find()->where(['contact_id'=>$id]);
         $dataProvider = new ActiveDataProvider([
             'query' =>$query,
         ]);
-        return $this->render('update', [
-            'model' => $model,
-            'phone_model' =>$phone_model,
-            'count' => $query->count(),
-            'dataProvider'=>$dataProvider
-        ]);
+
+        $data = [];
+        $data['model'] = $model;
+        $data['phone_model'] = $phone_model;
+        $data['count'] = $query->count();
+        $data['dataProvider'] = $dataProvider;
+        
+        $request = Yii::$app->request;
+        if($request->isPost) {
+            $post = $request->post('Contact');
+            $contact = Contact::find()
+                ->where(['first_name' => $post['first_name']])
+                ->andWhere(['second_name' => $post['second_name']])
+                ->andWhere(['last_name' => $post['last_name']])
+                ->one();
+            if($contact){
+                //$data['model'] = $contact;
+                Yii::$app->session->setFlash('error','Such contact already exist');
+            }else{
+                $model->load(Yii::$app->request->post());
+                if($model->validate()){
+                    $model->save();
+                    Yii::$app->session->setFlash('success', 'Success update the contact');
+                    return $this->redirect(['index']);
+                }else{
+                    $data['model'] = $contact;
+                    Yii::$app->session->setFlash('error',$model->errors );
+                }
+            }
+        }
+
+        return $this->render('update',$data);
     }
 
     /**
@@ -140,12 +153,11 @@ class ContactController extends Controller
         $model->active = 0;
         if($model->update()!=='false'){
             PhoneNumber::deleteAll(['contact_id' => $id]);
+            Yii::$app->session->setFlash('success', 'Success delete the selected contact');
             return $this->redirect(['index']);
         }else{
-            echo "<pre>";
-            var_dump('Error set the contact to inactive');
-            echo "</pre>";
-            exit;
+            Yii::$app->session->setFlash('error',$model->errors );
+            return $this->redirect(['index']);
         }
     }
 

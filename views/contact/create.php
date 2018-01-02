@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\bootstrap\Alert;
 
 
 /* @var $this yii\web\View */
@@ -10,15 +11,7 @@ $this->title = Yii::t('app', 'Create Contact');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Contacts'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<?php
-if(isset($errors) && !empty($errors)):
-    ?>
-    <div class="error-message col-md-10 col-md-offset-2">
-        <h1 class="text-danger"><?= $errors?></h1>
-    </div>
-    <?php
-endif;
-?>
+
 <div class="contact-create col-md-6 col-md-offset-2">
 
     <h1><?= Html::encode($this->title) ?></h1>

@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\web\View;
 use yii\widgets\Pjax;
+use yii\bootstrap\Alert;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ContactSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -11,6 +12,7 @@ use yii\widgets\Pjax;
 $this->title = Yii::t('app', 'Contacts');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <div class="contact-index">
 
     <h1><?= Html::encode($this->title) ?></h1>

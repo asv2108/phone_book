@@ -89,11 +89,12 @@ class PhoneNumberController extends Controller
         if ($model->load(Yii::$app->request->post())) {
 
             if($model->save()){
+                Yii::$app->session->setFlash('success', 'Success update the selected phone number');
                 return $this->redirect(['contact/update','id'=>$contact_id]);
             }else{
+                Yii::$app->session->setFlash('error',$model->errors );
                 return $this->render('update', [
-                    'model' => $model,
-                    'error' => $model->errors
+                    'model' => $model
                 ]);
             }
         }

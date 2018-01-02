@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\ActiveForm;
-
+use yii\bootstrap\Alert;
 /* @var $this yii\web\View */
 /* @var $model app\models\Contact */
 
@@ -15,12 +15,18 @@ $this->registerJsFile('@web/js/add-number.js', ['depends' => [\yii\web\JqueryAss
 $contact_id = $model->id;
 ?>
 <?php
-    if(isset($errors) && !empty($errors)):
-?>
-<div class="error-message col-md-12">
-    <h3 class="text-danger"><?= $errors?></h3>
-</div>
-<?php
+$errors = Yii::$app->session->getFlash('error');
+if(isset($errors) && !empty($errors)):
+    ?>
+    <div class="error-message col-md-6 col-md-offset-4">
+        <?=  Alert::widget([
+            'options' => [
+                'class' => 'alert-danger',
+            ],
+            'body' => $errors,
+        ]);?>
+    </div>
+    <?php
 endif;
 ?>
 <div class="contact-update col-md-6">
